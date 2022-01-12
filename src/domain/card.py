@@ -1,6 +1,7 @@
 from random import Random
 
 import copy
+import random
 
 class Card():
     visaPrefixList = [
@@ -83,3 +84,6 @@ class Card():
             cm = cm + cart[-4:] 
 
         return cm
+
+    def getCart(flag):
+        return  Card().set_mask_cart(Card().credit_card_number(random.seed, Card().mastercardPrefixList, 16, 1))

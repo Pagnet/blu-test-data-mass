@@ -1,34 +1,80 @@
-from src.domain.enums.register_code import RegisterCode
-from src.domain.enums.launch_type import LaunchType
-from src.domain.enums.transaction_type import TransactionType
-from src.domain.enums.means_capture import MeansCapture
-from src.domain.card import Card
 
-import datetime 
 import random
+import json
+
+from enum import Enum
+from datetime import datetime
+
+from domain.card import Card
+
+class LAUNCHTYPE(Enum):
+    PREVISAO = '0'
+    LIQUIDACAO_NORMAL = '1'
+    LIQUIDACAO_ANTECIPADA = '2'
+
+class MODALITY(Enum):
+    CREDITO = 'C'
+    DEBITO = 'D'
+
+class MEANSCAPTURE(Enum):
+    MANUAL = '1'
+    POS = '2'
+    PDV = '3'
+    TRNOFF = '4'
+    INTERNET = '5'
+ 
 
 class ImportSales():
-    def getTransactionsCash(self):
-        register_code = RegisterCode.CONSILIATION_BUY.value
-        store_identification = customer
-        NSU_transaction_host= random.randrange(1, 999999999999)    
+    def __init__(self):
+        self.register_code = ''
 
-        transaction_date = datetime.datetime.now().strftime("%Y%m%d")
-        transaction_hour = datetime.datetime.now().strftime("%H%M%S")
-        launch_type= launchType.LIQUIDACAO_NORMAL.value
-        launch_date = datetime.datetime.now().strftime("%Y%m%d")
-        product_type = TransactionType.CREDITO.value 
-        means_capture= MeansCapture.PDV.value
 
-        v = random.randrange(1, 9999)    
-        gross_sale_value = str(v).zfill(11) 
+    def createTransactionCash(self, ec, modality, flag, values):
+        sales = ImportSales()
+        sales.consoliationSales(self, ec, modality, '' , flag, values)
+    
+    def createTransactonParcial(ec, modality, split, flag, values):
+        sales = ImportSales()
+        sales.consoliationSales(ec, modality, split, flag, values)
 
-        d = int(round((v / 100) * 2.63 , 0))
-        discount_value = str(d).zfill(11) 
 
-        net_sale_value = str(v - d).zfill(11)
+    def consoliationSales(self, ec, modality, split, flag, value, typeLaunch, capture, tax):
+        self.register_code = "CV"
+        self.store_identification = ec
+        self.NSU_transaction_host = random.randrange(1, 999999999999)
 
-        card_number = blu.set_mask_cart(Card().credit_card_number(random.seed, Card().mastercardPrefixList, 16, 100))
+        self.transaction_date = datetime.now().strftime("%Y%m%d")
+        self.transaction_hour = datetime.now().strftime("%H%M%S")
+
+        if typeLaunch == '':
+            self.launch_type = LAUNCHTYPE.LIQUIDACAO_NORMAL.value
+        else:    
+            self.launch_type = typeLaunch
+
+        self.launch_date = datetime.now().strftime("%Y%m%d")
+        
+        if modality == MODALITY.CREDITO.value:
+            self.product_type = modality
+        elif modality == MODALITY.DEBITO.value:
+            self.product_type = modality
+
+        if capture == '':
+            self.means_capture = MEANSCAPTURE.PDV.value
+        else:
+           self.means_capture = capture
+
+        
+        if value == '':
+            v = random.randrange(1, 9999)
+
+        self.gross_sale_value = str(v).zfill(11)
+
+        d = int(round((v / 100) * tax, 0))
+        self.discount_value = str(d).zfill(11)
+
+        self.net_sale_value = str(v - d).zfill(11)
+
+        self.card_number = Card().getCart(flag)
 
         # parcel_number= "00"
         # total_parcel_number= "00"
@@ -44,7 +90,7 @@ class ImportSales():
         # authorization_code= "772377      "
         # flag_code= "001"
         # flag_product= "003"
-        
+
         # value_tx_interchange_tariff= "00000002270"
         # value_tx_administration= "00000000350"
         # value_tx_interchange_tariff_parcel= "00000000227"
@@ -61,4 +107,15 @@ class ImportSales():
 
         # NSEQ= "00000" + indice
 
-        return register_code + store_identification + NSU_transaction_host + transaction_date + transaction_hour + launch_type + launch_date + product_type + means_capture + gross_sale_value + discount_value + "0000000" + net_sale_value + card_number + parcel_number + total_parcel_number + NSU_parcel_host + gross_amount_parcel + parcel_discount_amount + net_amount_parcel + bank + agency + account + authorization_code + flag_code + flag_product + value_tx_interchange_tariff + value_tx_administration + value_tx_interchange_tariff_parcel + value_tx_administration_parcel + multi_border_reducing_value + value_tx_anticipation + anticipated_net_amount + transition_type + order_code + country_acronym + terminal_number + reserved + NSEQ
+        print('')
+
+        # return register_code + store_identification + NSU_transaction_host + transaction_date + transaction_hour + launch_type + launch_date + product_type + means_capture + gross_sale_value + discount_value + "0000000" + net_sale_value + card_number + parcel_number + total_parcel_number + NSU_parcel_host + gross_amount_parcel + parcel_discount_amount + net_amount_parcel + bank + agency + account + authorization_code + flag_code + flag_product + value_tx_interchange_tariff + value_tx_administration + value_tx_interchange_tariff_parcel + value_tx_administration_parcel + multi_border_reducing_value + value_tx_anticipation + anticipated_net_amount + transition_type + order_code + country_acronym + terminal_number + reserved + NSEQ
+
+
+if __name__=='__main__':
+    sale = ImportSales()
+    sale.consoliationSales("","","","","","","", 2.62)
+
+    json_object = json.dumps(sale.__dict__)
+    print(json_object)
+        
