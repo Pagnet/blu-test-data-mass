@@ -86,4 +86,20 @@ class Card():
         return cm
 
     def getCart(flag):
-        return  Card().set_mask_cart(Card().credit_card_number(random.seed, Card().mastercardPrefixList, 16, 1))
+        if flag == FLAG.VISA.VALUE:
+            implementar lógica
+        elif flag == FLAG.MASTER.VALUE:
+            return  Card().set_mask_cart(Card().credit_card_number(random.seed, Card().mastercardPrefixList, 16, 1))
+        elif flag == FLAG.AMEX.VALUE:
+            return  Card().set_mask_cart(Card().credit_card_number(random.seed, Card().amexPrefixList, 15, 1))
+        elif flag == FLAG.DISCOVER.VALUE:
+            return  Card().set_mask_cart(Card().credit_card_number(random.seed, Card().discoverPrefixList, 16, 1))
+        elif flag == FLAG.DINERS.VALUE:
+            return  Card().set_mask_cart(Card().credit_card_number(random.seed, Card().dinersPrefixList, 14, 1))
+        elif flag == FLAG.ENROUTE.VALUE:
+            return  Card().set_mask_cart(Card().credit_card_number(random.seed, Card().enRoutePrefixList, 15, 1))
+        elif flag == FLAG.JCB.VALUE:
+            return  Card().set_mask_cart(Card().credit_card_number(random.seed, Card().jcbPrefixList, 16, 1))
+        else flag == FLAG.VOYAGER.VALUE:
+            return  Card().set_mask_cart(Card().credit_card_number(random.seed, Card().voyagerPrefixList, 15, 1))
+        
