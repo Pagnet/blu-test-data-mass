@@ -14,6 +14,6 @@ class CustomerRepository(Repository):
         self.execute(sql)
         return self.commit()
     
-    def selectByEmail(self, email):
-        sql = f"SELECT to_jsonb(array_agg(customer)) FROM customer  where email = '{email}'"
+    def selectByRole(self, role):
+        sql = f"SELECT to_jsonb(array_agg(customer)) FROM customer  where roles = '{role}'"
         return self.query(sql)

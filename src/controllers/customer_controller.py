@@ -20,16 +20,16 @@ class RouteCustomerPost(Resource):
             payload = api.payload
             repo = CustomerRepository()
             query = repo.save(payload)
-            return {"msg": "Sucesso!", "insert": payload}
+            return {"msg": "Sucesso!", "obj": payload}
         except Exception as e:
             return {"msg": "Falha ao adicionar item!", "insert": payload}
 
-@ns.route('/<email>')
-class RouteCustomerGet(Resource):
-    def get(self, email):
+@ns.route('/<role>')
+class RouteCustomerGetEmail(Resource):
+    def get(self, role):
         try:
             repo = CustomerRepository()
-            query = repo.selectByEmail(email)
+            query = repo.selectByRole(role)
             return {"msg": "Sucesso!", "obj":query[0][0]}
         except Exception as e:
             return {"msg": "Falha ao realizar a consulta!", "error": '''"'''+ e +'''"'''}
