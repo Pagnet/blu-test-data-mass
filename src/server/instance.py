@@ -17,6 +17,6 @@ class Server():
                     )
     def run(self):
         self.scheduler.init_app(self.app)
-        self.app.run(debug=False)
+        self.app.run(debug=True)
 
 server = Server()
