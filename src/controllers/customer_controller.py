@@ -1,12 +1,9 @@
-import json
-from os import abort
-from types import MethodType
 from flask_restplus import Resource
-from flask import request
 from src.server.instance import server
-
 from src.db.customer_repository import CustomerRepository
 from src.models.customer_model import customer
+
+from src.server.exceptions import Exceptions_errors
 
 app, api = server.app, server.api
 ns = api.namespace('QA Automation', path='/api/v1/customer')
@@ -19,17 +16,32 @@ class RouteCustomerPost(Resource):
         try:
             payload = api.payload
             repo = CustomerRepository()
-            query = repo.save(payload)
-            return {"msg": "Sucesso!", "obj": payload}
+            er = Exceptions_errors()
+                
+            repo.save(payload)
+            
+            status_code = 200
+            message = "Sucesso!"
+            return er.make_error(status_code, message, payload)
         except Exception as e:
-            return {"msg": "Falha ao adicionar item!", "insert": payload}
+            status_code = 400
+            message = e.pgerror
+            return er.make_error(status_code, message, payload)
+
 
 @ns.route('/<role>')
 class RouteCustomerGetEmail(Resource):
     def get(self, role):
-        try:
-            repo = CustomerRepository()
-            query = repo.selectByRole(role)
-            return {"msg": "Sucesso!", "obj":query[0][0]}
-        except Exception as e:
-            return {"msg": "Falha ao realizar a consulta!", "error": '''"'''+ e +'''"'''}
+        repo = CustomerRepository()
+        er = Exceptions_errors()
+
+        query = repo.selectByRole(role)
+        if query[0][0] is None:
+                status_code = 404
+                message = "Usuario não localizado!"
+                return er.make_error(status_code, message, query)
+        
+        elif query[0][0] is not None:
+                status_code = 200
+                message = "Sucesso!"
+                return er.make_error(status_code, message, query[0][0])
