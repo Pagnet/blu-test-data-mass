@@ -1,4 +1,4 @@
-from util.create_card import CreateCard
+from src.util.create_card import CreateCard
 
 class Card():
     def set_mask_cart(self, cart):
@@ -18,8 +18,7 @@ class Card():
         util = CreateCard()
 
         if flag == "visa".casefold():
-            return Card.set_mask_cart(
-                util.credit_card_number(util.visaPrefixList, 16, 1))
-        elif flag == "mastercard".casefold():
-            return Card.set_mask_cart(
-                util.credit_card_number(util.visaPrefixList, 16, 1))
+
+            return self.set_mask_cart(
+                util.credit_card_number(
+                    util.visaPrefixList, 16, 1))

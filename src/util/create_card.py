@@ -1,7 +1,5 @@
-
 import copy
 from random import Random
-
 
 class CreateCard():
     visaPrefixList = [

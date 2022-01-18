@@ -16,11 +16,11 @@ class RouteBankPost(Resource):
 
     def get(Self):
         domain = Bank()
-        return domain.GetAllBank()
+        return domain.getAllBank()
 
 
 @ns.route('/<clientid>')
 class RouteCustomerGetEmail(Resource):
     def get(self, clientid):
         domain = Bank()
-        return domain.GetBankClientId(clientid)
+        return domain.getBankClientId(clientid)
