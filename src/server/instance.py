@@ -11,8 +11,8 @@ class Server():
         self.app = Flask(__name__)
         self.api = Api(self.app, 
                         version='1.0', 
-                        title='Engine Data Mass Atuomation Tests',
-                        description='test automation mass data base manager', 
+                        title='Engine Data Mass',
+                        description='Quality Assurance', 
                         doc='/'
                     )
     def run(self):
