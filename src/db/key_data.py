@@ -1,7 +1,7 @@
 from datetime import datetime
 from src.tools.repository import Repository
 
-class DocumentData(Repository):
+class KeyData(Repository):
     def save(self, obj):
         try:
             id = obj['id']
@@ -11,7 +11,7 @@ class DocumentData(Repository):
             
             create_date = datetime.now()
             
-            sql = f"insert into documents(id, document, create_date, update_date) values ({id}, '{doc}', '{create_date}', '{create_date}')"
+            sql = f"insert into keys(id, document, create_date, update_date) values ({id}, '{doc}', '{create_date}', '{create_date}')"
             self.execute(sql)
             self.commit()
 
@@ -19,14 +19,15 @@ class DocumentData(Repository):
         except Exception as e:
             return {'return': 'error', 'obj': e}
     
-    def selectById(self, id):
+    def selectAll(self, id):
         try:
-            sql = f"select document from documents where id = {id}"
+            sql = f"select * from Keys"
             data = self.query(sql)
             
             return {'return': 'sucess', 'obj': data}
         except Exception as e:
             return {'return': 'error', 'obj': e}
+    
 
     def updateById(self, obj):
         try:
@@ -37,7 +38,7 @@ class DocumentData(Repository):
             
             update_date = datetime.now()
             
-            sql = f"update documents set document= '{doc}',  update_date='{update_date}'where id = {id}"
+            sql = f"update keys set document= '{doc}',  update_date='{update_date}'where id = {id}"
             self.execute(sql)
             self.commit()
 
