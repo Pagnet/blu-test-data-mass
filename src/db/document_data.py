@@ -27,6 +27,15 @@ class DocumentData(Repository):
             return {'return': 'sucess', 'obj': data}
         except Exception as e:
             return {'return': 'error', 'obj': e}
+    
+    def selectAll(self):
+        try:
+            sql = f"select document from documents"
+            data = self.query(sql)
+            
+            return {'return': 'sucess', 'obj': data}
+        except Exception as e:
+            return {'return': 'error', 'obj': e}
 
     def updateById(self, obj):
         try:

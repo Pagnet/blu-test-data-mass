@@ -1,3 +1,4 @@
+import json
 from src.db.document_data import DocumentData
 from src.models.document_model import document
 from src.tools.utils import Formats
@@ -12,15 +13,14 @@ ns = api.namespace('Quality Assurance - Automation', path='/api/v1/automation')
 
 
 @ns.route('/')
-@ns.doc(
-    responses={
-        201: 'Created',
-        400: 'Failed to insert data mass',
-        500: 'Internal Error'
-    },
-    description='feature for storing documents for automations'
-)
 class RouteDocumentPost(Resource):
+    @ns.doc(
+        responses={
+            201: 'Created',
+            400: 'Failed to insert data mass',
+            500: 'Internal Error'
+        },
+        description='feature for storing documents for automations')
     @api.expect(document, valitade=True)
     def post(Self):
         repo = DocumentData()
@@ -41,8 +41,15 @@ class RouteDocumentPost(Resource):
             err = str(e)
             if err.find('Failed to decode JSON') >= 0:
                 return resp.formatResponse(500, err, '{}')
-    
+
     @api.expect(document, valitade=True)
+    @ns.doc(
+        responses={
+            201: 'Created',
+            400: 'Failed to insert data mass',
+            500: 'Internal Error'
+        },
+        description='feature for update documents for automations')
     def put(Self):
         repo = DocumentData()
         resp = Formats()
@@ -63,29 +70,63 @@ class RouteDocumentPost(Resource):
             if err.find('Failed to decode JSON') >= 0:
                 return resp.formatResponse(500, err, '{}')
 
+    @ns.doc(
+        responses={
+            201: 'Created',
+            400: 'Failed to insert data mass',
+            500: 'Internal Error'
+        },
+        description='feature for search documents for automations')
+    def get(self):
 
-@ns.route('/<id>')
-@ns.doc(
-    responses={
-        200: 'Sucess',
-        404: 'Failed to found data mass',
-        500: 'Internal Error'
-    },
-    description='feature for search documents the of automations'
-)
+        repo = DocumentData()
+        resp = Formats()
+        j = json
+
+        try:
+            r = repo.selectAll()
+            msg = r['return']
+
+            if len(r['obj']) > 0:
+                d = []
+                for item in r['obj']:
+                    d.append(item[0])
+
+                return resp.formatResponse(200, msg,  j.dumps(d, indent=4))
+
+            if len(r['obj']) == 0:
+                return resp.formatResponse(404, 'Not found test case id', '{}')
+
+        except Exception as e:
+            if e.find('JSONDecodeError') >= 0:
+                return resp.formatResponse(500, e.msg, '{}')
+
+
+@ns.route('/<int:id>')
 class RouteDocumentsGet(Resource):
+    @ns.doc(
+        responses={
+            200: 'Sucess',
+            404: 'Failed to found data mass',
+            500: 'Internal Error'
+        },
+        description='feature for search documents the of automations by id')
     def get(self, id):
         repo = DocumentData()
         resp = Formats()
 
         try:
+            if not isinstance(id, int):
+                return resp.formatResponse(400, 'Id must be an integer value ', '{}')
+
             r = repo.selectById(id)
+            msg = r['return']
 
-            if r['return'] == 'sucess' and len(r['obj']) > 0:
-                return resp.formatResponse(200, r['return'],  str(r['obj'][0][0]).replace('\'', '"'))
+            if len(r['obj']) > 0:
+                return resp.formatResponse(200, msg,  str(r['obj'][0][0]).replace('\'', '"'))
 
-            if r['return'] == 'sucess' and len(r['obj']) == 0:
-                return resp.formatResponse(404, r['return'], '{}' )
+            if len(r['obj']) == 0:
+                return resp.formatResponse(404, 'Not found test case id', '{}')
 
         except Exception as e:
             if e.find('JSONDecodeError') >= 0:
