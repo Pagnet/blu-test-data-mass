@@ -8,12 +8,10 @@ from src.server.instance import server
 
 
 app, api = server.app, server.api
-
-ns = api.namespace('Quality Assurance - Automation', path='/api/v1/automation')
-
+ns = api.namespace('Quality Assurance - Automation', path='/api/v1/automation/documents')
 
 @ns.route('/')
-class RouteDocumentPost(Resource):
+class RouteDocument(Resource):
     @ns.doc(
         responses={
             201: 'Created',
@@ -42,68 +40,9 @@ class RouteDocumentPost(Resource):
             if err.find('Failed to decode JSON') >= 0:
                 return resp.formatResponse(500, err, '{}')
 
-    @api.expect(document, valitade=True)
-    @ns.doc(
-        responses={
-            201: 'Created',
-            400: 'Failed to insert data mass',
-            500: 'Internal Error'
-        },
-        description='feature for update documents for automations')
-    def put(Self):
-        repo = DocumentData()
-        resp = Formats()
-
-        try:
-
-            payload = api.payload
-            r = repo.updateById(payload)
-
-            if r['return'] == 'sucess':
-                return resp.formatResponse(200, r['return'], str(payload['document']).replace('\'', '"'))
-
-            elif r['return'] == 'error':
-                return resp.loadErrorInsertDocument(resp, r, payload)
-
-        except Exception as e:
-            err = str(e)
-            if err.find('Failed to decode JSON') >= 0:
-                return resp.formatResponse(500, err, '{}')
-
-    @ns.doc(
-        responses={
-            201: 'Created',
-            400: 'Failed to insert data mass',
-            500: 'Internal Error'
-        },
-        description='feature for search documents for automations')
-    def get(self):
-
-        repo = DocumentData()
-        resp = Formats()
-        j = json
-
-        try:
-            r = repo.selectAll()
-            msg = r['return']
-
-            if len(r['obj']) > 0:
-                d = []
-                for item in r['obj']:
-                    d.append(item[0])
-
-                return resp.formatResponse(200, msg,  j.dumps(d, indent=4))
-
-            if len(r['obj']) == 0:
-                return resp.formatResponse(404, 'Not found test case id', '{}')
-
-        except Exception as e:
-            if e.find('JSONDecodeError') >= 0:
-                return resp.formatResponse(500, e.msg, '{}')
-
 
 @ns.route('/<int:id>')
-class RouteDocumentsGet(Resource):
+class RouteDocumentsById(Resource):
     @ns.doc(
         responses={
             200: 'Sucess',
@@ -123,7 +62,12 @@ class RouteDocumentsGet(Resource):
             msg = r['return']
 
             if len(r['obj']) > 0:
-                return resp.formatResponse(200, msg,  str(r['obj'][0][0]).replace('\'', '"'))
+                d = []
+               
+                for item in r['obj']:
+                    d.append(item[0])
+
+                return resp.formatResponse(200, msg,  json.dumps(d, indent=4))
 
             if len(r['obj']) == 0:
                 return resp.formatResponse(404, 'Not found test case id', '{}')

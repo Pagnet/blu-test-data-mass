@@ -28,28 +28,3 @@ class DocumentData(Repository):
         except Exception as e:
             return {'return': 'error', 'obj': e}
     
-    def selectAll(self):
-        try:
-            sql = f"select document from documents"
-            data = self.query(sql)
-            
-            return {'return': 'sucess', 'obj': data}
-        except Exception as e:
-            return {'return': 'error', 'obj': e}
-
-    def updateById(self, obj):
-        try:
-            id = obj['id']
-            
-            doc = str(obj['document'])
-            doc = doc.replace('\'', '"')
-            
-            update_date = datetime.now()
-            
-            sql = f"update documents set document= '{doc}',  update_date='{update_date}'where id = {id}"
-            self.execute(sql)
-            self.commit()
-
-            return {'return': 'sucess'}
-        except Exception as e:
-            return {'return': 'error', 'obj': e}
