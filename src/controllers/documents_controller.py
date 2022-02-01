@@ -62,10 +62,8 @@ class RouteDocumentsById(Resource):
             msg = r['return']
 
             if len(r['obj']) > 0:
-                d = []
-               
-                for item in r['obj']:
-                    d.append(item[0])
+                d = {}
+                d.update(r['obj'][0][0])
 
                 return resp.formatResponse(200, msg,  json.dumps(d, indent=4))
 
