@@ -12,7 +12,7 @@ class HooksData(Repository):
     
     def selectAll(self):
         try:
-            sql = f"select config, document from hooks order by config asc"
+            sql = f"select row_to_json(row) from (select config, document from hooks order by config asc) row"
             data = self.query(sql)
             
             return {'return': 'sucess', 'obj': data}

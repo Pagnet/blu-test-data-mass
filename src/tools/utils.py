@@ -1,4 +1,5 @@
 import json
+from operator import contains
 from flask import jsonify
 
 
@@ -29,46 +30,13 @@ class Formats():
         l = {}
         la = []
 
-        index = 0
-        i = len(r['obj']) - 1
+        configurations = len( r['obj'])
 
-        for item in r['obj']:
-            k = item[0]
-            nk = ''
-
-            if index < i:
-                nk = r['obj'][index + 1][0]
-
-            if index == 0:
-                if k == nk:
-                    la.append(item[1])
-                else:
-                    v = item[1]
-                    l.update({k: v})
-
-            else:
-                pk = r['obj'][index - 1][0]
-
-                if k == nk:
-                    if len(la) > 0 and k == pk:
-                        la.append(item[1])
-
-                if k == pk:
-                    la.append(item[1])
-
-                if k != pk:
-                    v = item[1]
-                    
-                    if k != nk:
-                        l.update({k: v})
-
-                        if len(la) > 0:
-                            l.update({pk: la})
-                            la = []
-
-                if  index == i and len(la) > 0:
-                    l.update({k: la})  
-
-            index += 1
-            
+        if configurations > 0:
+            for item in r['obj']:
+                v = item[0]['document']
+                la.append(v)
+        
+        l.update({'config':la})
+        
         return l
